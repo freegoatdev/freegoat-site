@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FREEGOAT Web3 Login</title>
+</head>
+<body style="font-family: sans-serif; text-align: center; background: #f9f9f9; padding: 40px;">
+    <img src="logo/freegoat-logo.png" alt="FreeGoat Logo" style="width: 150px;"><br><br>
+    <h1>FREEGOAT Platform</h1>
+    <p>Conecte-se com sua carteira Phantom para continuar:</p>
+    <button onclick="login()" style="padding: 10px 20px; font-size: 16px;">Login com Phantom</button>
+
+    <script>
+        const provider = window.phantom?.solana;
+
+        async function login() {
+            if (!provider?.isPhantom) {
+                alert("Instale a carteira Phantom para continuar.");
+                return;
+            }
+
+            try {
+                const resp = await provider.connect();
+                alert("Carteira conectada: " + resp.publicKey.toString());
+            } catch (err) {
+                alert("Falha na conexão com a carteira.");
+            }
+        }
+    </script>
+</body>
+</html>
