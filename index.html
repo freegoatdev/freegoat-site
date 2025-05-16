@@ -1,33 +1,67 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>FREEGOAT Web3 Login</title>
+  <meta charset="UTF-8">
+  <title>FREEGOAT Platform</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }}
+    .container {{
+      background: #fff;
+      padding: 40px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      text-align: center;
+      border-radius: 12px;
+    }}
+    .logo {{
+      width: 80px;
+      margin-bottom: 20px;
+    }}
+    h1 {{
+      margin: 0 0 10px 0;
+      font-size: 24px;
+    }}
+    p {{
+      margin: 10px 0;
+      font-size: 16px;
+    }}
+    .btn {{
+      background: #000;
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-top: 20px;
+    }}
+    .lang-link {{
+      font-size: 14px;
+      margin-top: 20px;
+      display: block;
+      color: #555;
+      text-decoration: none;
+    }}
+  </style>
 </head>
-<body style="font-family: sans-serif; text-align: center; background: #f9f9f9; padding: 40px;">
-    <img src="logo/freegoat-logo.png" alt="FreeGoat Logo" style="width: 150px;"><br><br>
+<body>
+  <div class="container">
+    <img src="logo/freegoat-logo.png" alt="Logo FREEGOAT" class="logo">
     <h1>FREEGOAT Platform</h1>
     <p>Conecte-se com sua carteira Phantom para continuar:</p>
-    <button onclick="login()" style="padding: 10px 20px; font-size: 16px;">Login com Phantom</button>
-
-    <script>
-        const provider = window.phantom?.solana;
-
-        async function login() {
-            if (!provider?.isPhantom) {
-                alert("Instale a carteira Phantom para continuar.");
-                return;
-            }
-
-            try {
-                const resp = await provider.connect();
-                alert("Carteira conectada: " + resp.publicKey.toString());
-            } catch (err) {
-                alert("Falha na conexão com a carteira.");
-            }
-        }
-    </script>
+    <button class="btn">Login com Phantom</button>
+    <a href="index-en.html" class="lang-link">🇺🇸 English version</a>
+  </div>
 </body>
 </html>
