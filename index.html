@@ -1,75 +1,49 @@
+
 <!DOCTYPE html>
-<html lang="auto">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FREEGOAT Platform</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            background-color: #ffffff;
-            margin: 0;
-            padding: 40px;
-        }
-        .logo {
-            width: 180px;
-            margin-bottom: 20px;
-        }
-        .title {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .subtitle {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
-        .button {
-            font-size: 1em;
-            padding: 10px 25px;
-            background-color: #000;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background-color: #222;
-        }
-    </style>
-    <script>
-        const translations = {
-            'pt': {
-                title: "FREEGOAT Plataforma",
-                subtitle: "Conecte-se com sua carteira Phantom para continuar:",
-                button: "Login com Phantom"
-            },
-            'en': {
-                title: "FREEGOAT Platform",
-                subtitle: "Connect with your Phantom Wallet to continue:",
-                button: "Login with Phantom"
-            },
-            'es': {
-                title: "Plataforma FREEGOAT",
-                subtitle: "Conéctate con tu billetera Phantom para continuar:",
-                button: "Iniciar sesión con Phantom"
-            }
-        };
-        function translate() {
-            const lang = navigator.language.slice(0, 2);
-            const t = translations[lang] || translations['en'];
-            document.getElementById("title").innerText = t.title;
-            document.getElementById("subtitle").innerText = t.subtitle;
-            document.getElementById("login-button").innerText = t.button;
-        }
-        window.onload = translate;
-    </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FREEGOAT Plataforma</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff;
+      text-align: center;
+      padding: 40px;
+      margin: 0;
+    }
+    img {
+      width: 150px;
+      margin-bottom: 30px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin: 0 0 10px;
+    }
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+    }
+    button {
+      background-color: black;
+      color: white;
+      padding: 14px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #333;
+    }
+  </style>
 </head>
 <body>
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo">
-    <div class="title" id="title">FREEGOAT</div>
-    <div class="subtitle" id="subtitle">...</div>
-    <button class="button" id="login-button">...</button>
+  <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" />
+  <h1>FREEGOAT Plataforma</h1>
+  <p>Conecte-se com sua carteira Phantom para continuar:</p>
+  <button>Login com Phantom</button>
 </body>
 </html>
