@@ -2,12 +2,53 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FREEGOAT</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      text-align: center;
+    }
+    img.logo {
+      width: 150px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: 3em;
+      margin: 0;
+    }
+    p {
+      font-size: 1.2em;
+      margin: 10px 0 20px;
+    }
+    button {
+      background-color: black;
+      color: white;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #333;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bem-vindo à FREEGOAT</h1>
+  <img src="freegoat-logo.png" alt="Logo FREEGOAT" class="logo">
+  <h1>FREEGOAT</h1>
+  <p>Conecte-se com sua carteira Phantom para continuar:</p>
   <button id="phantom-login-btn">Login com Phantom</button>
 
   <script>
@@ -32,9 +73,6 @@
 
         localStorage.setItem("walletAddress", walletAddress);
         alert("Login realizado com sucesso!");
-
-        // Redirecionar ou liberar conteúdo aqui
-        // window.location.href = "/painel.html";
       } catch (err) {
         console.error(err);
         alert("Erro ao conectar carteira.");
