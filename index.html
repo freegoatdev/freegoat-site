@@ -14,7 +14,7 @@
       font-family: Arial, sans-serif;
     }
     .container {
-      max-width: 500px;
+      max-width: 600px;
       margin: 100px auto;
       padding: 40px;
       background-color: white;
@@ -47,28 +47,36 @@
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="container" id="login-section" style="display: none;">
     <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
     <h1><strong>FREEGOAT</strong></h1>
     <p>Conecte-se com sua carteira Phantom para continuar:</p>
-    <button id="phantom-action-btn">Login com Phantom</button>
+    <button id="loginBtn">Login com Phantom</button>
+  </div>
+
+  <div class="container" id="welcome-section" style="display: none;">
+    <h1><strong>Bem-vindo à plataforma FREEGOAT 🐐</strong></h1>
+    <p>Você está interagindo com a plataforma FREEGOAT.</p>
+    <button id="logoutBtn">Desconectar</button>
   </div>
 
   <script>
-    const btn = document.getElementById("phantom-action-btn");
+    const loginSection = document.getElementById("login-section");
+    const welcomeSection = document.getElementById("welcome-section");
+    const loginBtn = document.getElementById("loginBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
 
-    async function connectOrLogout() {
-      const walletAddress = localStorage.getItem("walletAddress");
+    const walletAddress = localStorage.getItem("walletAddress");
 
-      if (walletAddress) {
-        localStorage.removeItem("walletAddress");
-        alert("Você se desconectou com sucesso.");
-        location.reload();
-        return;
-      }
+    if (walletAddress) {
+      welcomeSection.style.display = "block";
+    } else {
+      loginSection.style.display = "block";
+    }
 
+    loginBtn.addEventListener("click", async () => {
       if (!window.solana || !window.solana.isPhantom) {
-        alert("Phantom Wallet não encontrada. Instale a extensão.");
+        alert("Phantom Wallet não detectada.");
         return;
       }
 
@@ -90,15 +98,13 @@
         console.error(err);
         alert("Erro ao conectar carteira.");
       }
-    }
+    });
 
-    btn.addEventListener("click", connectOrLogout);
-
-    if (localStorage.getItem("walletAddress")) {
-      btn.textContent = "Desconectar";
-    } else {
-      btn.textContent = "Login com Phantom";
-    }
+    logoutBtn.addEventListener("click", () => {
+      localStorage.removeItem("walletAddress");
+      alert("Você se desconectou com sucesso.");
+      location.reload();
+    });
   </script>
 </body>
 </html>
