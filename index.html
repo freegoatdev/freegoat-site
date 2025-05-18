@@ -39,7 +39,6 @@
       border: none;
       border-radius: 8px;
       cursor: pointer;
-      margin: 5px;
     }
     button:hover {
       background-color: #333;
@@ -50,20 +49,28 @@
   <img src="logo/freegoat-logo.png" alt="Logo FREEGOAT" class="logo">
   <h1>FREEGOAT</h1>
   <p>Conecte-se com sua carteira Phantom para continuar:</p>
-  <button id="phantom-login-btn">Login com Phantom</button>
-  <button id="phantom-logout-btn">Desconectar</button>
+  <button id="phantom-action-btn">Login com Phantom</button>
 
   <script>
-    async function connectWallet() {
+    const btn = document.getElementById("phantom-action-btn");
+
+    async function connectOrLogout() {
+      const walletAddress = localStorage.getItem("walletAddress");
+
+      if (walletAddress) {
+        localStorage.removeItem("walletAddress");
+        alert("Você se desconectou com sucesso.");
+        location.reload();
+        return;
+      }
+
+      if (!window.solana || !window.solana.isPhantom) {
+        alert("Phantom Wallet não encontrada. Instale a extensão.");
+        return;
+      }
+
       try {
-        if (!window.solana || !window.solana.isPhantom) {
-          alert("Phantom Wallet não encontrada. Instale a extensão.");
-          return;
-        }
-
         const resp = await window.solana.connect();
-        const walletAddress = resp.publicKey.toString();
-
         const message = "Autentique-se para acessar a FREEGOAT";
         const encodedMessage = new TextEncoder().encode(message);
         const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
@@ -73,7 +80,7 @@
           return;
         }
 
-        localStorage.setItem("walletAddress", walletAddress);
+        localStorage.setItem("walletAddress", resp.publicKey.toString());
         alert("Login realizado com sucesso!");
         location.reload();
       } catch (err) {
@@ -82,22 +89,12 @@
       }
     }
 
-    function logoutWallet() {
-      localStorage.removeItem("walletAddress");
-      alert("Você se desconectou da FREEGOAT.");
-      location.reload();
-    }
+    btn.addEventListener("click", connectOrLogout);
 
-    document.getElementById("phantom-login-btn").addEventListener("click", connectWallet);
-    document.getElementById("phantom-logout-btn").addEventListener("click", logoutWallet);
-
-    const walletAddress = localStorage.getItem("walletAddress");
-    if (walletAddress) {
-      document.getElementById("phantom-login-btn").style.display = "none";
-      document.getElementById("phantom-logout-btn").style.display = "inline-block";
+    if (localStorage.getItem("walletAddress")) {
+      btn.textContent = "Desconectar";
     } else {
-      document.getElementById("phantom-login-btn").style.display = "inline-block";
-      document.getElementById("phantom-logout-btn").style.display = "none";
+      btn.textContent = "Login com Phantom";
     }
   </script>
 </body>
