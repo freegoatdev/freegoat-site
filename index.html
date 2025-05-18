@@ -75,18 +75,30 @@
 
         localStorage.setItem("walletAddress", walletAddress);
         alert("Login realizado com sucesso!");
+        location.reload();
       } catch (err) {
         console.error(err);
         alert("Erro ao conectar carteira.");
       }
     }
 
-    document.getElementById("phantom-login-btn").addEventListener("click", connectWallet);
-    document.getElementById("phantom-logout-btn").addEventListener("click", () => {
+    function logoutWallet() {
       localStorage.removeItem("walletAddress");
       alert("Você se desconectou da FREEGOAT.");
       location.reload();
-    });
+    }
+
+    document.getElementById("phantom-login-btn").addEventListener("click", connectWallet);
+    document.getElementById("phantom-logout-btn").addEventListener("click", logoutWallet);
+
+    const walletAddress = localStorage.getItem("walletAddress");
+    if (walletAddress) {
+      document.getElementById("phantom-login-btn").style.display = "none";
+      document.getElementById("phantom-logout-btn").style.display = "inline-block";
+    } else {
+      document.getElementById("phantom-login-btn").style.display = "inline-block";
+      document.getElementById("phantom-logout-btn").style.display = "none";
+    }
   </script>
 </body>
 </html>
