@@ -2,10 +2,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FREEGOAT</title>
-  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <style>
     body {
       margin: 0;
@@ -14,27 +14,30 @@
       font-family: Arial, sans-serif;
     }
     .container {
-      max-width: 600px;
+      max-width: 90%;
+      width: 500px;
       margin: 100px auto;
-      padding: 40px;
+      padding: 40px 20px;
       background-color: white;
       border-radius: 20px;
       text-align: center;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .logo {
-      width: 100px;
+      width: 80px;
       margin-bottom: 20px;
     }
     h1 {
-      font-size: 28px;
+      font-size: 24px;
       margin: 0;
     }
     p {
       color: #555;
       margin: 16px 0;
+      font-size: 16px;
     }
-    button {
+    button, a.button {
+      display: inline-block;
       background-color: black;
       color: white;
       padding: 12px 24px;
@@ -43,6 +46,19 @@
       border-radius: 6px;
       cursor: pointer;
       margin-top: 20px;
+      text-decoration: none;
+    }
+    @media (max-width: 480px) {
+      .container {
+        margin-top: 60px;
+        padding: 30px 15px;
+      }
+      h1 {
+        font-size: 20px;
+      }
+      p {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -52,6 +68,7 @@
     <h1><strong>FREEGOAT</strong></h1>
     <p>Conecte-se com sua carteira Phantom para continuar:</p>
     <button id="loginBtn">Login com Phantom</button>
+    <a href="https://phantom.app/ul/browse/https://freegoat.io" class="button" style="margin-top: 10px;" id="openPhantom" target="_blank">Abrir no app Phantom</a>
   </div>
 
   <div class="container" id="welcome-section" style="display: none;">
@@ -65,6 +82,7 @@
     const welcomeSection = document.getElementById("welcome-section");
     const loginBtn = document.getElementById("loginBtn");
     const logoutBtn = document.getElementById("logoutBtn");
+    const openPhantom = document.getElementById("openPhantom");
 
     const walletAddress = localStorage.getItem("walletAddress");
 
@@ -72,6 +90,13 @@
       welcomeSection.style.display = "block";
     } else {
       loginSection.style.display = "block";
+    }
+
+    // Verifica se está dentro do app Phantom
+    const isPhantomBrowser = window?.solana?.isPhantom;
+
+    if (isPhantomBrowser) {
+      openPhantom.style.display = "none";
     }
 
     loginBtn.addEventListener("click", async () => {
