@@ -5,45 +5,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FREEGOAT</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #fff;
-      text-align: center;
-      padding: 40px;
-      margin: 0;
-    }
-    img {
-      width: 150px;
-      margin-bottom: 30px;
-    }
-    h1 {
-      font-size: 2.5em;
-      margin: 0 0 10px;
-    }
-    p {
-      font-size: 1.2em;
-      margin-bottom: 30px;
-    }
-    button {
-      background-color: black;
-      color: white;
-      padding: 14px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #333;
-    }
-  </style>
 </head>
 <body>
-  <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" />
-  <h1>FREEGOAT</h1>
-  <p>Conecte-se com sua carteira Phantom para continuar:</p>
-  <button>Login com Phantom</button>
+  <h1>Bem-vindo à FREEGOAT</h1>
+  <button id="phantom-login-btn">Login com Phantom</button>
+
+  <script>
+    async function connectWallet() {
+      try {
+        if (!window.solana || !window.solana.isPhantom) {
+          alert("Phantom Wallet não encontrada. Instale a extensão.");
+          return;
+        }
+
+        const resp = await window.solana.connect();
+        const walletAddress = resp.publicKey.toString();
+
+        const message = "Autentique-se para acessar a FREEGOAT";
+        const encodedMessage = new TextEncoder().encode(message);
+        const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+
+        if (!signedMessage || !signedMessage.signature) {
+          alert("Assinatura inválida.");
+          return;
+        }
+
+        localStorage.setItem("walletAddress", walletAddress);
+        alert("Login realizado com sucesso!");
+
+        // Redirecionar ou liberar conteúdo aqui
+        // window.location.href = "/painel.html";
+      } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar carteira.");
+      }
+    }
+
+    document.getElementById("phantom-login-btn").addEventListener("click", connectWallet);
+  </script>
 </body>
 </html>
