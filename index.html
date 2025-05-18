@@ -8,48 +8,51 @@
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #fff;
-      color: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
-      text-align: center;
+      padding: 0;
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
     }
-    img.logo {
-      width: 150px;
+    .container {
+      max-width: 500px;
+      margin: 100px auto;
+      padding: 40px;
+      background-color: white;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    .logo {
+      width: 100px;
       margin-bottom: 20px;
     }
     h1 {
-      font-size: 3em;
+      font-size: 28px;
       margin: 0;
     }
     p {
-      font-size: 1.2em;
-      margin: 10px 0 20px;
+      color: #555;
+      margin: 16px 0;
     }
     button {
       background-color: black;
       color: white;
-      padding: 10px 20px;
-      font-size: 1em;
+      padding: 12px 24px;
+      font-size: 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #333;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <img src="logo/freegoat-logo.png" alt="Logo FREEGOAT" class="logo">
-  <h1>FREEGOAT</h1>
-  <p>Conecte-se com sua carteira Phantom para continuar:</p>
-  <button id="phantom-action-btn">Login com Phantom</button>
+  <div class="container">
+    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
+    <h1><strong>FREEGOAT</strong></h1>
+    <p>Conecte-se com sua carteira Phantom para continuar:</p>
+    <button id="phantom-action-btn">Login com Phantom</button>
+  </div>
 
   <script>
     const btn = document.getElementById("phantom-action-btn");
