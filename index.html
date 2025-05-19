@@ -1,135 +1,122 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FREEGOAT</title>
   <link rel="manifest" href="manifest.json" />
   <style>
     body {
       margin: 0;
-      background-color: #0f0f0f;
       font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
       color: white;
-      display: flex;
-      flex-direction: column;
     }
     header {
-      background-color: #1a1a1a;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 30px;
+      background-color: #111;
+      padding: 12px 24px;
     }
-    header img {
+    .logo {
       height: 40px;
     }
-    .header-title {
-      text-align: center;
-      flex: 1;
+    .status-text {
       font-size: 16px;
     }
     .connect-btn {
-      background: transparent;
+      background: none;
       color: white;
       border: 1px solid white;
-      border-radius: 5px;
-      padding: 5px 12px;
+      padding: 8px 16px;
+      border-radius: 6px;
       cursor: pointer;
-    }
-    .container {
-      flex-grow: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px 20px;
     }
     .card {
-      background: #111;
-      padding: 30px;
-      border-radius: 15px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      max-width: 400px;
+      background-color: #111;
+      padding: 40px;
+      margin: 80px auto;
       width: 100%;
+      max-width: 420px;
+      border-radius: 16px;
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.1);
+      text-align: center;
     }
-    .card img.logo {
-      height: 60px;
-      margin-bottom: 20px;
+    .card img {
+      width: 60px;
+      margin-bottom: 16px;
     }
-    .card h1 {
-      margin: 0 0 10px;
-      font-size: 24px;
-    }
-    .card p {
-      margin: 10px 0 20px;
-    }
-    .wallet-button {
+    .wallet-btn {
+      width: 100%;
       background-color: white;
       color: black;
+      font-weight: bold;
       border: none;
       border-radius: 10px;
-      padding: 15px 20px;
-      margin: 10px 0;
-      font-size: 16px;
-      font-weight: bold;
+      margin: 12px 0;
+      padding: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      width: 100%;
     }
-    .wallet-button img {
+    .wallet-btn img {
       height: 24px;
-      margin-right: 10px;
+      margin-right: 12px;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT" />
-    <div class="header-title">Você está interagindo com a plataforma</div>
-    <button class="connect-btn" onclick="connectWallet()">Conectar</button>
+    <img src="logo/freegoat-logo.png" class="logo" alt="FREEGOAT logo" />
+    <span class="status-text" id="status">Você está interagindo com a plataforma</span>
+    <button id="wallet-button" class="connect-btn" onclick="connectWallet()">Conectar</button>
   </header>
-  <div class="container">
-    <div class="card">
-      <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
-      <h1>Entre com sua carteira</h1>
-      <p>Escolha uma das opções abaixo:</p>
-      <button class="wallet-button" onclick="connectWallet()">
-        <img src="logo/phantom-logo.png" alt="Phantom" />
-        Conectar com Phantom
-      </button>
-      <button class="wallet-button" onclick="connectWallet()">
-        <img src="logo/freegoat-logo.png" alt="FREEGOAT" />
-        Conectar com FREEGOAT
-      </button>
-    </div>
+
+  <div class="card">
+    <img src="logo/freegoat-logo.png" alt="Goat logo">
+    <h2>Entre com sua carteira</h2>
+    <p>Escolha uma das opções abaixo:</p>
+    <button class="wallet-btn" onclick="connectWallet()">
+      <img src="logo/phantom-logo.png" alt="Phantom logo"> Conectar com Phantom
+    </button>
+    <button class="wallet-btn">
+      <img src="logo/freegoat-logo.png" alt="FREEGOAT logo"> Conectar com FREEGOAT
+    </button>
   </div>
 
   <script>
     async function connectWallet() {
-      if (window.solana && window.solana.isPhantom) {
-        try {
-          const response = await window.solana.connect();
-          console.log("Carteira conectada:", response.publicKey.toString());
-          document.querySelector(".connect-btn").innerText = "Desconectar";
-          document.querySelector(".connect-btn").onclick = disconnectWallet;
-        } catch (err) {
-          console.error("Conexão cancelada");
-        }
-      } else {
-        alert("Instale a carteira Phantom para continuar.");
+      const walletButton = document.getElementById("wallet-button");
+      try {
+        const resp = await window.solana.connect();
+        walletButton.innerText = "Desconectar";
+        walletButton.onclick = disconnectWallet;
+        document.getElementById("status").innerText = "Carteira conectada!";
+        console.log("Conectado:", resp.publicKey.toString());
+      } catch (err) {
+        console.error("Conexão recusada:", err);
       }
     }
 
-    async function disconnectWallet() {
-      if (window.solana && window.solana.isPhantom) {
-        await window.solana.disconnect();
-        document.querySelector(".connect-btn").innerText = "Conectar";
-        document.querySelector(".connect-btn").onclick = connectWallet;
-      }
+    function disconnectWallet() {
+      walletButton.innerText = "Conectar";
+      walletButton.onclick = connectWallet;
+      document.getElementById("status").innerText = "Você está interagindo com a plataforma";
     }
+
+    window.addEventListener("load", async () => {
+      if (window.solana && window.solana.isPhantom) {
+        const resp = await window.solana.connect({ onlyIfTrusted: true }).catch(() => {});
+        if (resp) {
+          document.getElementById("wallet-button").innerText = "Desconectar";
+          document.getElementById("wallet-button").onclick = disconnectWallet;
+          document.getElementById("status").innerText = "Carteira conectada!";
+        }
+      }
+    });
   </script>
 </body>
 </html>
