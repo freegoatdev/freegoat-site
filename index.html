@@ -50,20 +50,31 @@
     });
 
     phantomConnect.addEventListener("click", async () => {
-      if (window.solana && window.solana.isPhantom) {
-        try {
-          const resp = await window.solana.connect();
-          walletConnected = true;
-          connectButton.textContent = "Desconectar";
-          platformStatus.textContent = "Você está interagindo com a plataforma";
-          walletModal.classList.add("hidden");
-        } catch (err) {
-          alert("Conexão com Phantom Wallet cancelada.");
-        }
-      } else {
-        alert("Phantom Wallet não está instalada.");
-      }
-    });
+  if (window.solana && window.solana.isPhantom) {
+    try {
+      const resp = await window.solana.connect();
+      const wallet = resp.publicKey.toString();
+
+      const message = "Autenticar login na plataforma FREEGOAT";
+      const encodedMessage = new TextEncoder().encode(message);
+      const signed = await window.solana.signMessage(encodedMessage, "utf8");
+
+      // Armazenar localmente (opcional)
+      localStorage.setItem("walletAddress", wallet);
+      localStorage.setItem("signature", JSON.stringify(signed));
+
+      walletConnected = true;
+      connectButton.textContent = "Desconectar";
+      platformStatus.textContent = "Você está interagindo com a plataforma";
+      walletModal.classList.add("hidden");
+    } catch (err) {
+      alert("Conexão com Phantom Wallet cancelada.");
+    }
+  } else {
+    alert("Phantom Wallet não está instalada.");
+  }
+});
+
   </script>
 </body>
 </html>
