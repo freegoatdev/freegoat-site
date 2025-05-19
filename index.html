@@ -1,86 +1,82 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FREEGOAT</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <header>
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo">
-    <p id="platform-status">Conectar para interagir com a plataforma</p>
-    <button id="connect-button">Conectar</button>
-  </header>
-
-  <div id="wallet-modal" class="modal hidden">
-    <div class="modal-content">
-      <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="modal-logo" />
-      <h2>Entre com sua carteira</h2>
-      <p>Escolha uma das opções abaixo:</p>
-      <button class="wallet-button" id="phantom-connect">
-        <img src="logo/phantom-logo.png" class="wallet-icon" alt="Phantom" />
-        Conectar com Phantom
-      </button>
-      <button class="wallet-button" id="freegoat-connect">
-        <img src="logo/freegoat-logo.png" class="wallet-icon" alt="FREEGOAT" />
-        Conectar com FREEGOAT
-      </button>
-    </div>
-  </div>
-
-  <script>
-    const statusText = document.getElementById("platform-status");
-    const connectButton = document.getElementById("connect-button");
-    const modal = document.getElementById("wallet-modal");
-    const phantomConnect = document.getElementById("phantom-connect");
-    const freegoatConnect = document.getElementById("freegoat-connect");
-
-    let connected = false;
-
-    connectButton.onclick = () => {
-      if (!connected) {
-        modal.classList.remove("hidden");
-      } else {
-        disconnectWallet();
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FREEGOAT</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.json" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+      body { background-color: #0f0f0f; color: white; }
+      header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem;
+               background-color: #1a1a1a; position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 1000; }
+      .logo { height: 32px; }
+      .status-text { text-align: center; flex-grow: 1; font-size: 0.9rem; color: #ccc; }
+      .button-right { background: transparent; border: 1px solid white; padding: 6px 12px; color: white;
+                      cursor: pointer; border-radius: 4px; }
+      main { display: flex; justify-content: center; align-items: center; height: 100vh; padding-top: 64px; }
+      .card { background-color: #151515; padding: 2rem; border-radius: 12px;
+              box-shadow: 0 0 12px rgba(255,255,255,0.1); max-width: 400px; width: 100%; text-align: center; }
+      .card img { height: 64px; margin-bottom: 1rem; }
+      .card h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+      .card p { font-size: 0.9rem; margin-bottom: 1.5rem; }
+      .btn { display: flex; align-items: center; justify-content: center; background-color: white;
+             color: black; border: none; padding: 10px; margin: 6px 0; border-radius: 8px; cursor: pointer;
+             font-weight: bold; width: 100%; }
+      .btn img { height: 20px; margin-right: 10px; }
+      @media (max-width: 600px) {
+        .status-text { font-size: 0.75rem; }
+        .card { margin: 0 1rem; }
       }
-    };
-
-    function disconnectWallet() {
-      const provider = window?.phantom?.solana;
-      if (provider && provider.isPhantom) {
-        provider.disconnect();
-      }
-      connected = false;
-      connectButton.textContent = "Conectar";
-      statusText.textContent = "Conectar para interagir com a plataforma";
-    }
-
-    phantomConnect.onclick = async () => {
-      try {
-        const provider = window?.phantom?.solana;
-        if (!provider || !provider.isPhantom) {
-          alert("Carteira Phantom não encontrada.");
-          return;
-        }
-
-        const response = await provider.connect();
-        console.log("Conectado:", response.publicKey.toString());
-
-        connected = true;
-        connectButton.textContent = "Desconectar";
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
+      <div class="status-text" id="statusText">Você está interagindo com a plataforma</div>
+      <button class="button-right" id="authBtn">Conectar</button>
+    </header>
+    <main>
+      <div class="card" id="loginCard">
+        <img src="logo/freegoat-logo.png" alt="Logo" />
+        <h1>Entre com sua carteira</h1>
+        <p>Escolha uma das opções abaixo:</p>
+        <button class="btn" onclick="connectPhantom()">
+          <img src="logo/phantom-logo.png" alt="Phantom" /> Conectar com Phantom
+        </button>
+        <button class="btn" onclick="connectFreegoat()">
+          <img src="logo/freegoat-logo.png" alt="FREEGOAT" /> Conectar com FREEGOAT
+        </button>
+      </div>
+    </main>
+    <script>
+      const loginCard = document.getElementById("loginCard");
+      const statusText = document.getElementById("statusText");
+      const authBtn = document.getElementById("authBtn");
+      let connected = false;
+      function connectPhantom() {
+        loginCard.style.display = "none";
         statusText.textContent = "Você está interagindo com a plataforma";
-        modal.classList.add("hidden");
-      } catch (err) {
-        alert("Conexão cancelada ou falhou.");
+        authBtn.textContent = "Desconectar";
+        connected = true;
       }
-    };
-
-    freegoatConnect.onclick = () => {
-      alert("Conexão com FREEGOAT ainda está em desenvolvimento.");
-      modal.classList.add("hidden");
-    };
-  </script>
-</body>
+      function connectFreegoat() {
+        loginCard.style.display = "none";
+        statusText.textContent = "Você está interagindo com a plataforma";
+        authBtn.textContent = "Desconectar";
+        connected = true;
+      }
+      authBtn.addEventListener("click", () => {
+        if (connected) {
+          connected = false;
+          statusText.textContent = "Você está interagindo com a plataforma";
+          authBtn.textContent = "Conectar";
+          loginCard.style.display = "flex";
+        } else {
+          loginCard.style.display = "flex";
+        }
+      });
+    </script>
+  </body>
 </html>
