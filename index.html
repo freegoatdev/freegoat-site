@@ -6,62 +6,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FREEGOAT</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="manifest" href="manifest.json" />
 </head>
 <body>
   <header>
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="header-logo">
-    <span id="platform-status">Conectar para interagir com a plataforma</span>
-    <button id="connectButton" class="header-button">Conectar</button>
+    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
+    <span id="wallet-status">Conectar para interagir com a plataforma</span>
+    <button id="connect-btn" onclick="openModal()">Conectar</button>
   </header>
 
-  <div id="walletModal" class="modal hidden">
+  <!-- Modal -->
+  <div id="modal" class="modal">
     <div class="modal-content">
-      <img src="logo/freegoat-logo.png" alt="Logo" class="modal-logo">
+      <img src="logo/freegoat-logo.png" alt="Logo" class="modal-logo" />
       <h2>Entre com sua carteira</h2>
       <p>Escolha uma das opções abaixo:</p>
-      <button class="wallet-button" id="phantomConnect">
-        <img src="logo/phantom-logo.png" alt="Phantom" class="wallet-icon">
+      <button class="wallet-button" onclick="connectWallet()">
+        <img src="logo/phantom-logo.png" alt="Phantom" class="icon" />
         Conectar com Phantom
       </button>
-      <button class="wallet-button" onclick="alert('FREEGOAT ainda está em desenvolvimento.')">
-        <img src="logo/freegoat-logo.png" alt="FREEGOAT" class="wallet-icon">
+      <button class="wallet-button" onclick="alert('Carteira FREEGOAT em desenvolvimento')">
+        <img src="logo/freegoat-logo.png" alt="FREEGOAT" class="icon" />
         Conectar com FREEGOAT
       </button>
     </div>
   </div>
 
   <script>
-    const connectButton = document.getElementById("connectButton");
-    const walletModal = document.getElementById("walletModal");
-    const platformStatus = document.getElementById("platform-status");
-    const phantomConnect = document.getElementById("phantomConnect");
+    function openModal() {
+      document.getElementById("modal").style.display = "flex";
+    }
 
-    let walletConnected = false;
+    function closeModal() {
+      document.getElementById("modal").style.display = "none";
+    }
 
-    connectButton.addEventListener("click", () => {
-      if (walletConnected) {
-        walletConnected = false;
-        connectButton.textContent = "Conectar";
-        platformStatus.textContent = "Conectar para interagir com a plataforma";
-      } else {
-        walletModal.classList.remove("hidden");
-      }
-    });
-
-    phantomConnect.addEventListener("click", async () => {
+    async function connectWallet() {
       if (window.solana && window.solana.isPhantom) {
         try {
           const resp = await window.solana.connect();
-          walletConnected = true;
-          connectButton.textContent = "Desconectar";
-          platformStatus.textContent = "Você está interagindo com a plataforma";
-          walletModal.classList.add("hidden");
+          const wallet = resp.publicKey.toString();
+
+          const message = "Autenticar login na plataforma FREEGOAT";
+          const encodedMessage = new TextEncoder().encode(message);
+          const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+
+          localStorage.setItem("walletAddress", wallet);
+          localStorage.setItem("signedMessage", JSON.stringify(signedMessage));
+
+          document.getElementById("wallet-status").innerText = "Você está interagindo com a plataforma";
+          document.getElementById("connect-btn").innerText = "Desconectar";
+          closeModal();
         } catch (err) {
-          alert("Conexão com Phantom Wallet cancelada.");
+          console.error("Erro:", err);
         }
       } else {
-        alert("Phantom Wallet não está instalada.");
+        alert("Instale a Phantom Wallet para prosseguir.");
+      }
+    }
+
+    document.getElementById("connect-btn").addEventListener("click", () => {
+      const connected = localStorage.getItem("walletAddress");
+      if (connected) {
+        localStorage.removeItem("walletAddress");
+        localStorage.removeItem("signedMessage");
+        document.getElementById("wallet-status").innerText = "Conectar para interagir com a plataforma";
+        document.getElementById("connect-btn").innerText = "Conectar";
+      } else {
+        openModal();
       }
     });
   </script>
