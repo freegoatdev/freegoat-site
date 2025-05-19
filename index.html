@@ -23,7 +23,7 @@
       padding: 10px 20px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: space-between; flex-wrap: wrap;
       position: fixed;
       top: 0;
       width: 100%;
@@ -103,7 +103,7 @@
 </head>
 <body>
 
-<header id="mainHeader" style="display: none;">
+<header id="mainHeader" style="display: none; flex-direction: row;">
   <button onclick="showLogoutConfirm()">Desconectar</button>
   <span class="message">Você está interagindo com a plataforma</span>
   <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" />
@@ -117,7 +117,7 @@
     <img src="logo/phantom-icon.png" alt="Phantom Icon" /> Conectar com Phantom
   </button>
   <button class="wallet-option" onclick="alert('FREEGOAT Wallet em desenvolvimento!')">
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT Icon" /> Conectar com FREEGOAT Wallet
+    <img src="logo/freegoat-logo.png" alt="FREEGOAT Icon" /> Conectar com FREEGOAT
   </button>
 </div>
 
