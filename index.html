@@ -2,108 +2,184 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="manifest" href="manifest.json" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FREEGOAT</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="title" content="FREEGOAT" />
+  <meta name="description" content="Autentique-se na plataforma FREEGOAT" />
   <style>
     body {
       margin: 0;
-      background-color: #0d0d0d;
-      color: white;
+      padding: 0;
+      background-color: #111;
       font-family: Arial, sans-serif;
+      color: white;
     }
     header {
-      background-color: #111;
-      padding: 10px;
-      text-align: center;
+      background-color: #1e1e1e;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between; flex-wrap: wrap;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
     header img {
       height: 40px;
     }
-    #connectButton {
-      position: absolute;
-      right: 20px;
-      top: 15px;
-      padding: 8px 16px;
-      border: 1px solid white;
+    header .message {
+      font-size: 14px;
+      color: #ccc;
+    }
+    header button {
       background-color: transparent;
-      color: white;
+      color: #fff;
+      border: 1px solid #fff;
+      padding: 6px 12px;
+      border-radius: 5px;
       cursor: pointer;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.7);
-    }
-    .modal-content {
+    .container {
+      max-width: 600px;
+      margin: 120px auto 40px;
+      padding: 40px;
       background-color: #1a1a1a;
-      margin: 15% auto;
-      padding: 20px;
-      border: 1px solid #888;
-      width: 90%;
-      max-width: 400px;
       border-radius: 10px;
       text-align: center;
     }
-    .wallet-button {
+    .logo {
+      width: 100px;
+      margin-bottom: 20px;
+    }
+    .wallet-option {
+      background-color: white;
+      color: black;
+      padding: 12px 20px;
+      margin: 12px auto;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 12px;
-      margin-top: 12px;
-      padding: 12px;
+      gap: 10px;
+      width: 100%;
+      max-width: 280px;
       border: none;
-      border-radius: 8px;
-      background-color: white;
-      color: black;
-      cursor: pointer;
-      font-weight: bold;
     }
-    .wallet-button img {
-      height: 20px;
+    .wallet-option img {
+      width: 24px;
+      height: 24px;
+    }
+    #logoutConfirm {
+      display: none;
+      margin-top: 20px;
+      background-color: #333;
+      padding: 15px;
+      border-radius: 8px;
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+    }
+    @media (max-width: 600px) {
+      .wallet-option {
+        font-size: 14px;
+        padding: 10px;
+      }
+      header {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo">
-    <button id="connectButton">Conectar</button>
-  </header>
 
-  <div id="walletModal" class="modal">
-    <div class="modal-content">
-      <img src="logo/freegoat-logo.png" alt="Logo" style="height: 50px; margin-bottom: 10px;">
-      <h2>Entre com sua carteira</h2>
-      <p>Escolha uma das opções abaixo:</p>
-      <button class="wallet-button" onclick="connectWallet('phantom')">
-        <img src="logo/phantom-logo.png" alt="Phantom Logo">Conectar com Phantom
-      </button>
-      <button class="wallet-button" onclick="connectWallet('freegoat')">
-        <img src="logo/freegoat-logo.png" alt="Freegoat Logo">Conectar com FREEGOAT
-      </button>
-    </div>
-  </div>
+<header id="mainHeader" style="display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; position: fixed; top: 0; width: 100%; background-color: #1e1e1e; z-index: 1000; padding: 10px 20px;" style="display: none; flex-direction: row;">
+  <img src="logo/freegoat-logo.png" style="justify-self: center;" alt="FREEGOAT Logo" />
+  <span class="message">Interagindo com a Plataforma</span>
+  <button style="justify-self: center;" onclick="showLogoutConfirm()">Desconectar</button>
+</header>
 
-  <script>
-    const modal = document.getElementById("walletModal");
-    document.getElementById("connectButton").onclick = () => modal.style.display = "block";
-    window.onclick = (event) => {
-      if (event.target == modal) {
-        modal.style.display = "none";
-      }
-    };
+<div class="container" id="loginContainer">
+  <img src="logo/freegoat-logo.png" style="justify-self: center;" alt="FREEGOAT Logo" class="logo">
+  <h2>Entre com sua carteira</h2>
+  <p>Escolha uma das opções abaixo:</p>
+  <button class="wallet-option" onclick="connectPhantom()">
+    <img src="logo/phantom-icon.png" alt="Phantom Icon" /> Conectar com Phantom
+  </button>
+  <button class="wallet-option" onclick="alert('FREEGOAT Wallet em desenvolvimento!')">
+    <img src="logo/freegoat-logo.png" style="justify-self: center;" alt="FREEGOAT Icon" /> Conectar com FREEGOAT
+  </button>
+</div>
 
-    function connectWallet(wallet) {
-      alert(`Solicitando conexão com a carteira: ${wallet.toUpperCase()}`);
-      modal.style.display = "none";
+<div id="logoutConfirm">
+  <p>Tem certeza de que deseja se desconectar da plataforma FREEGOAT?</p>
+  <button onclick="logout()">Sim, desconectar</button>
+  <button onclick="cancelLogout()">Cancelar</button>
+</div>
+
+<script>
+  const loginContainer = document.getElementById("loginContainer");
+  const header = document.getElementById("mainHeader");
+  const logoutConfirm = document.getElementById("logoutConfirm");
+  const walletAddress = localStorage.getItem("walletAddress");
+
+  if (walletAddress) {
+    loginContainer.style.display = "none";
+    header.style.display = "flex";
+  }
+
+  function showLogoutConfirm() {
+    logoutConfirm.style.display = "block";
+  }
+
+  function cancelLogout() {
+    logoutConfirm.style.display = "none";
+  }
+
+  async function logout() {
+    try {
+      const disconnect = await window.solana.disconnect();
+    } catch {}
+    localStorage.removeItem("walletAddress");
+    alert("Você se desconectou com sucesso.");
+    location.reload();
+  }
+
+  async function connectPhantom() {
+    if (!window.solana || !window.solana.isPhantom) {
+      alert("Phantom Wallet não detectada.");
+      return;
     }
-  </script>
+
+    try {
+      const resp = await window.solana.connect();
+      const message = "Autentique-se para acessar a FREEGOAT";
+      const encoded = new TextEncoder().encode(message);
+      const signed = await window.solana.signMessage(encoded, "utf8");
+
+      if (!signed || !signed.signature) {
+        alert("Assinatura inválida.");
+        return;
+      }
+
+      localStorage.setItem("walletAddress", resp.publicKey.toString());
+      alert("Login realizado com sucesso!");
+      location.reload();
+    } catch (err) {
+      alert("Erro ao conectar com a Phantom.");
+    }
+  }
+</script>
+
 </body>
 </html>
