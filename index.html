@@ -1,61 +1,82 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>FREEGOAT</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.json" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+      body { background-color: #0f0f0f; color: white; }
+      header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem;
+               background-color: #1a1a1a; position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 1000; }
+      .logo { height: 32px; }
+      .status-text { text-align: center; flex-grow: 1; font-size: 0.9rem; color: #ccc; }
+      .button-right { background: transparent; border: 1px solid white; padding: 6px 12px; color: white;
+                      cursor: pointer; border-radius: 4px; }
+      main { display: flex; justify-content: center; align-items: center; height: 100vh; padding-top: 64px; }
+      .card { background-color: #151515; padding: 2rem; border-radius: 12px;
+              box-shadow: 0 0 12px rgba(255,255,255,0.1); max-width: 400px; width: 100%; text-align: center; }
+      .card img { height: 64px; margin-bottom: 1rem; }
+      .card h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+      .card p { font-size: 0.9rem; margin-bottom: 1.5rem; }
+      .btn { display: flex; align-items: center; justify-content: center; background-color: white;
+             color: black; border: none; padding: 10px; margin: 6px 0; border-radius: 8px; cursor: pointer;
+             font-weight: bold; width: 100%; }
+      .btn img { height: 20px; margin-right: 10px; }
+      @media (max-width: 600px) {
+        .status-text { font-size: 0.75rem; }
+        .card { margin: 0 1rem; }
+      }
+    </style>
+  </head>
+  <body>
     <header>
-        <img src="logo/freegoat-logo.png" alt="Logo FREEGOAT" class="logo">
-        <p id="status">Conectar para interagir com a plataforma</p>
-        <button id="connectButton">Conectar</button>
+      <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
+      <div class="status-text" id="statusText">Você está interagindo com a plataforma</div>
+      <button class="button-right" id="authBtn">Conectar</button>
     </header>
-
-    <div id="walletModal" class="modal hidden">
-        <div class="modal-content">
-            <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="modal-logo" />
-            <h2>Entre com sua carteira</h2>
-            <p>Escolha uma das opções abaixo:</p>
-            <button class="wallet-button" id="phantomConnect">
-                <img src="logo/phantom-logo.png" alt="Phantom Logo" class="wallet-icon" />
-                Conectar com Phantom
-            </button>
-            <button class="wallet-button" id="freegoatConnect">
-                <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="wallet-icon" />
-                Conectar com FREEGOAT
-            </button>
-        </div>
-    </div>
-
+    <main>
+      <div class="card" id="loginCard">
+        <img src="logo/freegoat-logo.png" alt="Logo" />
+        <h1>Entre com sua carteira</h1>
+        <p>Escolha uma das opções abaixo:</p>
+        <button class="btn" onclick="connectPhantom()">
+          <img src="logo/phantom-logo.png" alt="Phantom" /> Conectar com Phantom
+        </button>
+        <button class="btn" onclick="connectFreegoat()">
+          <img src="logo/freegoat-logo.png" alt="FREEGOAT" /> Conectar com FREEGOAT
+        </button>
+      </div>
+    </main>
     <script>
-        const connectButton = document.getElementById("connectButton");
-        const modal = document.getElementById("walletModal");
-        const status = document.getElementById("status");
-        const phantomBtn = document.getElementById("phantomConnect");
-        const freegoatBtn = document.getElementById("freegoatConnect");
-
-        connectButton.addEventListener("click", () => {
-            modal.classList.remove("hidden");
-        });
-
-        phantomBtn.addEventListener("click", async () => {
-            try {
-                const resp = await window.solana.connect();
-                status.textContent = "Você está interagindo com a plataforma";
-                connectButton.textContent = "Desconectar";
-                modal.classList.add("hidden");
-            } catch (err) {
-                console.error("Phantom connection failed", err);
-            }
-        });
-
-        freegoatBtn.addEventListener("click", () => {
-            alert("Conexão FREEGOAT ainda está em desenvolvimento.");
-            modal.classList.add("hidden");
-        });
+      const loginCard = document.getElementById("loginCard");
+      const statusText = document.getElementById("statusText");
+      const authBtn = document.getElementById("authBtn");
+      let connected = false;
+      function connectPhantom() {
+        loginCard.style.display = "none";
+        statusText.textContent = "Você está interagindo com a plataforma";
+        authBtn.textContent = "Desconectar";
+        connected = true;
+      }
+      function connectFreegoat() {
+        loginCard.style.display = "none";
+        statusText.textContent = "Você está interagindo com a plataforma";
+        authBtn.textContent = "Desconectar";
+        connected = true;
+      }
+      authBtn.addEventListener("click", () => {
+        if (connected) {
+          connected = false;
+          statusText.textContent = "Você está interagindo com a plataforma";
+          authBtn.textContent = "Conectar";
+          loginCard.style.display = "flex";
+        } else {
+          loginCard.style.display = "flex";
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
