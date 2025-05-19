@@ -5,22 +5,25 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FREEGOAT</title>
+  <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="title" content="FREEGOAT" />
+  <meta name="description" content="Autentique-se na plataforma FREEGOAT" />
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #f4f4f4;
+      background-color: #ffffff;
       font-family: Arial, sans-serif;
+      text-align: center;
     }
     .container {
-      max-width: 90%;
-      width: 500px;
+      max-width: 500px;
       margin: 100px auto;
       padding: 40px 20px;
-      background-color: white;
+      background-color: #fff;
       border-radius: 20px;
-      text-align: center;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
     .logo {
@@ -28,16 +31,16 @@
       margin-bottom: 20px;
     }
     h1 {
-      font-size: 24px;
+      font-size: 26px;
+      font-weight: bold;
       margin: 0;
     }
     p {
-      color: #555;
-      margin: 16px 0;
+      color: #333;
       font-size: 16px;
+      margin-top: 10px;
     }
-    button, a.button {
-      display: inline-block;
+    button {
       background-color: black;
       color: white;
       padding: 12px 24px;
@@ -45,63 +48,22 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      margin-top: 20px;
-      text-decoration: none;
-    }
-    @media (max-width: 480px) {
-      .container {
-        margin-top: 60px;
-        padding: 30px 15px;
-      }
-      h1 {
-        font-size: 20px;
-      }
-      p {
-        font-size: 14px;
-      }
+      margin-top: 25px;
     }
   </style>
 </head>
 <body>
-  <div class="container" id="login-section" style="display: none;">
+  <div class="container">
     <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
-    <h1><strong>FREEGOAT</strong></h1>
+    <h1>FREEGOAT</h1>
     <p>Conecte-se com sua carteira Phantom para continuar:</p>
-    <button id="loginBtn">Login com Phantom</button>
-    <a href="https://phantom.app/ul/browse/https://freegoat.io" class="button" style="margin-top: 10px;" id="openPhantom" target="_blank">Abrir no app Phantom</a>
-  </div>
-
-  <div class="container" id="welcome-section" style="display: none;">
-    <h1><strong>Bem-vindo à FREEGOAT 🐐</strong></h1>
-    <p>Você está interagindo com a plataforma.</p>
-    <button id="logoutBtn">Desconectar</button>
+    <button onclick="connectWallet()">Login com Phantom</button>
   </div>
 
   <script>
-    const loginSection = document.getElementById("login-section");
-    const welcomeSection = document.getElementById("welcome-section");
-    const loginBtn = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const openPhantom = document.getElementById("openPhantom");
-
-    const walletAddress = localStorage.getItem("walletAddress");
-
-    if (walletAddress) {
-      welcomeSection.style.display = "block";
-    } else {
-      loginSection.style.display = "block";
-    }
-
-    // Verifica se está dentro do app Phantom
-    const isPhantomBrowser = window?.solana?.isPhantom;
-
-    if (isPhantomBrowser) {
-      openPhantom.style.display = "none";
-    }
-
-    loginBtn.addEventListener("click", async () => {
+    async function connectWallet() {
       if (!window.solana || !window.solana.isPhantom) {
-        alert("Phantom Wallet não detectada.");
+        alert("Phantom Wallet não encontrada.");
         return;
       }
 
@@ -109,27 +71,20 @@
         const resp = await window.solana.connect();
         const message = "Autentique-se para acessar a FREEGOAT";
         const encodedMessage = new TextEncoder().encode(message);
-        const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+        const signed = await window.solana.signMessage(encodedMessage, "utf8");
 
-        if (!signedMessage || !signedMessage.signature) {
+        if (!signed || !signed.signature) {
           alert("Assinatura inválida.");
           return;
         }
 
         localStorage.setItem("walletAddress", resp.publicKey.toString());
         alert("Login realizado com sucesso!");
-        location.reload();
+        window.location.reload();
       } catch (err) {
-        console.error(err);
-        alert("Erro ao conectar carteira.");
+        alert("Erro ao conectar ou assinar.");
       }
-    });
-
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("walletAddress");
-      alert("Você se desconectou com sucesso.");
-      location.reload();
-    });
+    }
   </script>
 </body>
 </html>
