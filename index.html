@@ -43,26 +43,37 @@
       if (!connected) {
         modal.classList.remove("hidden");
       } else {
-        connected = false;
-        connectButton.textContent = "Conectar";
-        statusText.textContent = "Conectar para interagir com a plataforma";
+        disconnectWallet();
       }
     };
+
+    function disconnectWallet() {
+      const provider = window?.phantom?.solana;
+      if (provider && provider.isPhantom) {
+        provider.disconnect();
+      }
+      connected = false;
+      connectButton.textContent = "Conectar";
+      statusText.textContent = "Conectar para interagir com a plataforma";
+    }
 
     phantomConnect.onclick = async () => {
       try {
         const provider = window?.phantom?.solana;
-        if (provider?.isPhantom) {
-          const resp = await provider.connect();
-          connected = true;
-          connectButton.textContent = "Desconectar";
-          statusText.textContent = "Você está interagindo com a plataforma";
-          modal.classList.add("hidden");
-        } else {
+        if (!provider || !provider.isPhantom) {
           alert("Carteira Phantom não encontrada.");
+          return;
         }
+
+        const response = await provider.connect();
+        console.log("Conectado:", response.publicKey.toString());
+
+        connected = true;
+        connectButton.textContent = "Desconectar";
+        statusText.textContent = "Você está interagindo com a plataforma";
+        modal.classList.add("hidden");
       } catch (err) {
-        alert("Erro ao conectar com Phantom.");
+        alert("Conexão cancelada ou falhou.");
       }
     };
 
