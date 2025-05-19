@@ -1,185 +1,82 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FREEGOAT</title>
-  <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="title" content="FREEGOAT" />
-  <meta name="description" content="Autentique-se na plataforma FREEGOAT" />
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #111;
-      font-family: Arial, sans-serif;
-      color: white;
-    }
-    header {
-      background-color: #1e1e1e;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between; flex-wrap: wrap;
-      position: fixed;
-      top: 0;
-      width: 100%;
-      z-index: 1000;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    header img {
-      height: 40px;
-    }
-    header .message {
-      font-size: 14px;
-      color: #ccc;
-    }
-    header button {
-      background-color: transparent;
-      color: #fff;
-      border: 1px solid #fff;
-      padding: 6px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .container {
-      max-width: 600px;
-      margin: 120px auto 40px;
-      padding: 40px;
-      background-color: #1a1a1a;
-      border-radius: 10px;
-      text-align: center;
-    }
-    .logo {
-      width: 100px;
-      margin-bottom: 20px;
-    }
-    .wallet-option {
-      background-color: white;
-      color: black;
-      padding: 12px 20px;
-      margin: 12px auto;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      width: 100%;
-      max-width: 280px;
-      border: none;
-    }
-    .wallet-option img {
-      width: 24px;
-      height: 24px;
-    }
-    #logoutConfirm {
-      display: none;
-      margin-top: 20px;
-      background-color: #333;
-      padding: 15px;
-      border-radius: 8px;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 9999;
-    }
-    @media (max-width: 600px) {
-      .wallet-option {
-        font-size: 14px;
-        padding: 10px;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FREEGOAT</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.json" />
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+      body { background-color: #0f0f0f; color: white; }
+      header { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 1.5rem;
+               background-color: #1a1a1a; position: fixed; top: 0; left: 0; right: 0; height: 64px; z-index: 1000; }
+      .logo { height: 32px; }
+      .status-text { text-align: center; flex-grow: 1; font-size: 0.9rem; color: #ccc; }
+      .button-right { background: transparent; border: 1px solid white; padding: 6px 12px; color: white;
+                      cursor: pointer; border-radius: 4px; }
+      main { display: flex; justify-content: center; align-items: center; height: 100vh; padding-top: 64px; }
+      .card { background-color: #151515; padding: 2rem; border-radius: 12px;
+              box-shadow: 0 0 12px rgba(255,255,255,0.1); max-width: 400px; width: 100%; text-align: center; }
+      .card img { height: 64px; margin-bottom: 1rem; }
+      .card h1 { font-size: 1.5rem; margin-bottom: 1rem; }
+      .card p { font-size: 0.9rem; margin-bottom: 1.5rem; }
+      .btn { display: flex; align-items: center; justify-content: center; background-color: white;
+             color: black; border: none; padding: 10px; margin: 6px 0; border-radius: 8px; cursor: pointer;
+             font-weight: bold; width: 100%; }
+      .btn img { height: 20px; margin-right: 10px; }
+      @media (max-width: 600px) {
+        .status-text { font-size: 0.75rem; }
+        .card { margin: 0 1rem; }
       }
-      header {
-        flex-direction: column;
-        gap: 8px;
-        align-items: flex-start;
+    </style>
+  </head>
+  <body>
+    <header>
+      <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
+      <div class="status-text" id="statusText">Você está interagindo com a plataforma</div>
+      <button class="button-right" id="authBtn">Conectar</button>
+    </header>
+    <main>
+      <div class="card" id="loginCard">
+        <img src="logo/freegoat-logo.png" alt="Logo" />
+        <h1>Entre com sua carteira</h1>
+        <p>Escolha uma das opções abaixo:</p>
+        <button class="btn" onclick="connectPhantom()">
+          <img src="logo/phantom-logo.png" alt="Phantom" /> Conectar com Phantom
+        </button>
+        <button class="btn" onclick="connectFreegoat()">
+          <img src="logo/freegoat-logo.png" alt="FREEGOAT" /> Conectar com FREEGOAT
+        </button>
+      </div>
+    </main>
+    <script>
+      const loginCard = document.getElementById("loginCard");
+      const statusText = document.getElementById("statusText");
+      const authBtn = document.getElementById("authBtn");
+      let connected = false;
+      function connectPhantom() {
+        loginCard.style.display = "none";
+        statusText.textContent = "Você está interagindo com a plataforma";
+        authBtn.textContent = "Desconectar";
+        connected = true;
       }
-    }
-  </style>
-</head>
-<body>
-
-<header id="mainHeader" style="display: grid; grid-template-columns: 1fr 1fr 1fr; align-items: center; position: fixed; top: 0; width: 100%; background-color: #1e1e1e; z-index: 1000; padding: 10px 20px;" style="display: none; flex-direction: row;">
-  <img src="logo/freegoat-logo.png" style="justify-self: center;" alt="FREEGOAT Logo" />
-  <span class="message">Interagindo com a Plataforma</span>
-  <button style="justify-self: center;" onclick="showLogoutConfirm()">Desconectar</button>
-</header>
-
-<div class="container" id="loginContainer">
-  <img src="logo/freegoat-logo.png" style="justify-self: center;" alt="FREEGOAT Logo" class="logo">
-  <h2>Entre com sua carteira</h2>
-  <p>Escolha uma das opções abaixo:</p>
-  <button class="wallet-option" onclick="connectPhantom()">
-    <img src="logo/phantom-icon.png" alt="Phantom Icon" /> Conectar com Phantom
-  </button>
-  <button class="wallet-option" onclick="alert('FREEGOAT Wallet em desenvolvimento!')">
-    <img src="logo/freegoat-logo.png" style="justify-self: center;" alt="FREEGOAT Icon" /> Conectar com FREEGOAT
-  </button>
-</div>
-
-<div id="logoutConfirm">
-  <p>Tem certeza de que deseja se desconectar da plataforma FREEGOAT?</p>
-  <button onclick="logout()">Sim, desconectar</button>
-  <button onclick="cancelLogout()">Cancelar</button>
-</div>
-
-<script>
-  const loginContainer = document.getElementById("loginContainer");
-  const header = document.getElementById("mainHeader");
-  const logoutConfirm = document.getElementById("logoutConfirm");
-  const walletAddress = localStorage.getItem("walletAddress");
-
-  if (walletAddress) {
-    loginContainer.style.display = "none";
-    header.style.display = "flex";
-  }
-
-  function showLogoutConfirm() {
-    logoutConfirm.style.display = "block";
-  }
-
-  function cancelLogout() {
-    logoutConfirm.style.display = "none";
-  }
-
-  async function logout() {
-    try {
-      const disconnect = await window.solana.disconnect();
-    } catch {}
-    localStorage.removeItem("walletAddress");
-    alert("Você se desconectou com sucesso.");
-    location.reload();
-  }
-
-  async function connectPhantom() {
-    if (!window.solana || !window.solana.isPhantom) {
-      alert("Phantom Wallet não detectada.");
-      return;
-    }
-
-    try {
-      const resp = await window.solana.connect();
-      const message = "Autentique-se para acessar a FREEGOAT";
-      const encoded = new TextEncoder().encode(message);
-      const signed = await window.solana.signMessage(encoded, "utf8");
-
-      if (!signed || !signed.signature) {
-        alert("Assinatura inválida.");
-        return;
+      function connectFreegoat() {
+        loginCard.style.display = "none";
+        statusText.textContent = "Você está interagindo com a plataforma";
+        authBtn.textContent = "Desconectar";
+        connected = true;
       }
-
-      localStorage.setItem("walletAddress", resp.publicKey.toString());
-      alert("Login realizado com sucesso!");
-      location.reload();
-    } catch (err) {
-      alert("Erro ao conectar com a Phantom.");
-    }
-  }
-</script>
-
-</body>
+      authBtn.addEventListener("click", () => {
+        if (connected) {
+          connected = false;
+          statusText.textContent = "Você está interagindo com a plataforma";
+          authBtn.textContent = "Conectar";
+          loginCard.style.display = "flex";
+        } else {
+          loginCard.style.display = "flex";
+        }
+      });
+    </script>
+  </body>
 </html>
