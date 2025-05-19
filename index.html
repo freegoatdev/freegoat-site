@@ -14,35 +14,58 @@
     body {
       margin: 0;
       padding: 0;
-      background-color: #ffffff;
+      background-color: #111;
       font-family: Arial, sans-serif;
-      text-align: center;
+      color: #fff;
+    }
+    header {
+      background-color: #1e1e1e;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    header img {
+      height: 40px;
+    }
+    header .message {
+      font-size: 14px;
+      color: #ccc;
+    }
+    header button {
+      background-color: transparent;
+      color: #fff;
+      border: 1px solid #fff;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
     }
     .container {
-      max-width: 500px;
-      margin: 100px auto;
-      padding: 40px 20px;
-      background-color: #fff;
-      border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+      margin: 120px auto 40px;
+      padding: 40px;
+      background-color: #1a1a1a;
+      border-radius: 10px;
+      text-align: center;
     }
     .logo {
-      width: 80px;
+      width: 100px;
       margin-bottom: 20px;
     }
     h1 {
-      font-size: 26px;
-      font-weight: bold;
-      margin: 0;
+      margin-bottom: 10px;
     }
     p {
-      color: #333;
-      font-size: 16px;
-      margin-top: 10px;
+      color: #ccc;
     }
-    button {
-      background-color: black;
-      color: white;
+    #connectBtn {
+      background-color: white;
+      color: black;
       padding: 12px 24px;
       font-size: 16px;
       border: none;
@@ -50,41 +73,89 @@
       cursor: pointer;
       margin-top: 25px;
     }
+    #logoutConfirm {
+      display: none;
+      margin-top: 20px;
+      background-color: #333;
+      padding: 15px;
+      border-radius: 8px;
+    }
+    #logoutConfirm button {
+      margin: 10px 8px 0;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo" />
-    <h1>FREEGOAT</h1>
-    <p>Conecte-se com sua carteira Phantom para continuar:</p>
-    <button onclick="connectWallet()">Login com Phantom</button>
-  </div>
 
-  <script>
-    async function connectWallet() {
-      if (!window.solana || !window.solana.isPhantom) {
-        alert("Phantom Wallet não encontrada.");
+<header id="mainHeader" style="display: none;">
+  <button onclick="showLogoutConfirm()">Desconectar</button>
+  <span class="message">Você está interagindo com a plataforma</span>
+  <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo">
+</header>
+
+<div class="container" id="loginContainer">
+  <img src="logo/freegoat-logo.png" alt="FREEGOAT Logo" class="logo">
+  <h1>FREEGOAT</h1>
+  <p>Conecte-se com sua carteira Phantom para continuar:</p>
+  <button id="connectBtn" onclick="connectWallet()">Login com Phantom</button>
+</div>
+
+<div id="logoutConfirm" class="container">
+  <p>Tem certeza de que deseja se desconectar da plataforma FREEGOAT?</p>
+  <button onclick="logout()">Sim, desconectar</button>
+  <button onclick="cancelLogout()">Cancelar</button>
+</div>
+
+<script>
+  const walletAddress = localStorage.getItem("walletAddress");
+  const loginContainer = document.getElementById("loginContainer");
+  const header = document.getElementById("mainHeader");
+  const logoutConfirm = document.getElementById("logoutConfirm");
+
+  if (walletAddress) {
+    loginContainer.style.display = "none";
+    header.style.display = "flex";
+  }
+
+  async function connectWallet() {
+    if (!window.solana || !window.solana.isPhantom) {
+      alert("Phantom Wallet não detectada.");
+      return;
+    }
+
+    try {
+      const resp = await window.solana.connect();
+      const message = "Autentique-se para acessar a FREEGOAT";
+      const encodedMessage = new TextEncoder().encode(message);
+      const signedMessage = await window.solana.signMessage(encodedMessage, "utf8");
+
+      if (!signedMessage || !signedMessage.signature) {
+        alert("Assinatura inválida.");
         return;
       }
 
-      try {
-        const resp = await window.solana.connect();
-        const message = "Autentique-se para acessar a FREEGOAT";
-        const encodedMessage = new TextEncoder().encode(message);
-        const signed = await window.solana.signMessage(encodedMessage, "utf8");
-
-        if (!signed || !signed.signature) {
-          alert("Assinatura inválida.");
-          return;
-        }
-
-        localStorage.setItem("walletAddress", resp.publicKey.toString());
-        alert("Login realizado com sucesso!");
-        window.location.reload();
-      } catch (err) {
-        alert("Erro ao conectar ou assinar.");
-      }
+      localStorage.setItem("walletAddress", resp.publicKey.toString());
+      alert("Login realizado com sucesso!");
+      location.reload();
+    } catch (err) {
+      alert("Erro ao conectar ou assinar.");
     }
-  </script>
+  }
+
+  function showLogoutConfirm() {
+    logoutConfirm.style.display = "block";
+  }
+
+  function cancelLogout() {
+    logoutConfirm.style.display = "none";
+  }
+
+  function logout() {
+    localStorage.removeItem("walletAddress");
+    alert("Você se desconectou com sucesso.");
+    location.reload();
+  }
+</script>
+
 </body>
 </html>
