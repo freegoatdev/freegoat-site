@@ -1,32 +1,48 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-  const phantomBtn = document.getElementById("phantom-button");
-  const freegoatBtn = document.getElementById("freegoat-button");
-  const connectBtn = document.getElementById("connect-button");
-  const modal = document.getElementById("wallet-modal");
-  const status = document.getElementById("platform-status");
+const connectButton = document.getElementById("connect-btn");
+const platformStatus = document.getElementById("wallet-status");
+const walletModal = document.getElementById("wallet-modal");
+const phantomConnect = document.getElementById("phantomConnect");
 
-  connectBtn.onclick = () => {
-    modal.style.display = "block";
-  };
+let walletConnected = false;
 
-  phantomBtn.onclick = async () => {
+connectButton.addEventListener("click", () => {
+  if (walletConnected) {
+    walletConnected = false;
+    localStorage.removeItem("walletAddress");
+    localStorage.removeItem("signedMessage");
+    connectButton.textContent = "Conectar";
+    platformStatus.textContent = "Conectar para interagir com a plataforma";
+  } else {
+    walletModal.classList.remove("hidden");
+  }
+});
+
+phantomConnect.addEventListener("click", async () => {
+  const provider = window?.solana;
+
+  if (provider?.isPhantom) {
     try {
-      const provider = window?.phantom?.solana;
-      if (provider && provider.isPhantom) {
-        const resp = await provider.connect();
-        status.textContent = "Você está interagindo com a plataforma";
-        modal.style.display = "none";
-      } else {
-        alert("Phantom Wallet não encontrada.");
-      }
-    } catch (err) {
-      alert("Conexão cancelada.");
-    }
-  };
+      const connectResponse = await provider.connect();
+      const wallet = connectResponse.publicKey.toString();
 
-  freegoatBtn.onclick = () => {
-    alert("Conexão com a carteira FREEGOAT ainda está em desenvolvimento.");
-    modal.style.display = "block";
-  };
+      const message = "Autenticar login na plataforma FREEGOAT";
+      const encodedMessage = new TextEncoder().encode(message);
+      const signedMessage = await provider.signMessage(encodedMessage, "utf8");
+
+      localStorage.setItem("walletAddress", wallet);
+      localStorage.setItem("signedMessage", JSON.stringify(signedMessage));
+
+      walletConnected = true;
+      connectButton.textContent = "Desconectar";
+      platformStatus.textContent = "Você está interagindo com a plataforma";
+      walletModal.classList.add("hidden");
+
+    } catch (error) {
+      alert("Erro ao conectar ou assinar com a Phantom.");
+      console.error(error);
+    }
+  } else {
+    alert("Phantom Wallet não está instalada.");
+  }
 });
